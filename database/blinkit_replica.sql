@@ -45,18 +45,18 @@ INSERT IGNORE INTO categories (id, name) VALUES
 INSERT INTO products (category_id, name, description, price, stock, image_url)
 SELECT c.id, v.name, v.description, v.price, v.stock, v.image_url
 FROM (
-  SELECT 'Dairy' category, 'Fresh Milk 500 ml' name, 'Pasteurised toned milk' description, 32.00 price, 50 stock, 'https://placehold.co/400x300/f4f8e9/245b35?text=Fresh+Milk' image_url
-  UNION ALL SELECT 'Dairy', 'Farm Eggs (6 pcs)', 'Pack of six eggs', 48.00, 35, 'https://placehold.co/400x300/f4f8e9/245b35?text=Eggs'
-  UNION ALL SELECT 'Fruits', 'Banana (6 pcs)', 'Fresh bananas', 42.00, 40, 'https://placehold.co/400x300/f4f8e9/245b35?text=Bananas'
-  UNION ALL SELECT 'Fruits', 'Apples (4 pcs)', 'Crisp red apples', 120.00, 25, 'https://placehold.co/400x300/f4f8e9/245b35?text=Apples'
-  UNION ALL SELECT 'Vegetables', 'Tomato 500 g', 'Fresh red tomatoes', 28.00, 45, 'https://placehold.co/400x300/f4f8e9/245b35?text=Tomatoes'
-  UNION ALL SELECT 'Vegetables', 'Potato 1 kg', 'Everyday potatoes', 36.00, 60, 'https://placehold.co/400x300/f4f8e9/245b35?text=Potatoes'
-  UNION ALL SELECT 'Snacks', 'Potato Chips', 'Classic salted chips', 20.00, 70, 'https://placehold.co/400x300/f4f8e9/245b35?text=Chips'
-  UNION ALL SELECT 'Snacks', 'Chocolate Bar', 'Milk chocolate bar', 35.00, 40, 'https://placehold.co/400x300/f4f8e9/245b35?text=Chocolate'
-  UNION ALL SELECT 'Beverages', 'Orange Juice 1 L', 'Orange fruit drink', 95.00, 20, 'https://placehold.co/400x300/f4f8e9/245b35?text=Juice'
-  UNION ALL SELECT 'Beverages', 'Bottled Water 1 L', 'Drinking water', 20.00, 100, 'https://placehold.co/400x300/f4f8e9/245b35?text=Water'
-  UNION ALL SELECT 'Bakery', 'Bread Loaf', 'Soft sandwich bread', 40.00, 30, 'https://placehold.co/400x300/f4f8e9/245b35?text=Bread'
-  UNION ALL SELECT 'Dairy', 'Butter 100 g', 'Creamy salted butter', 58.00, 25, 'https://placehold.co/400x300/f4f8e9/245b35?text=Butter'
+  SELECT 'Dairy' category, 'Fresh Milk 500 ml' name, 'Pasteurised toned milk' description, 32.00 price, 50 stock, 'https://images.pexels.com/photos/6804192/pexels-photo-6804192.jpeg' image_url
+  UNION ALL SELECT 'Dairy', 'Farm Eggs (6 pcs)', 'Pack of six eggs', 48.00, 35, 'https://images.pexels.com/photos/6845644/pexels-photo-6845644.jpeg'
+  UNION ALL SELECT 'Fruits', 'Banana (6 pcs)', 'Fresh bananas', 42.00, 40, 'https://images.pexels.com/photos/30893278/pexels-photo-30893278.jpeg'
+  UNION ALL SELECT 'Fruits', 'Apples (4 pcs)', 'Crisp red apples', 120.00, 25, 'https://images.pexels.com/photos/12955951/pexels-photo-12955951.jpeg'
+  UNION ALL SELECT 'Vegetables', 'Tomato 500 g', 'Fresh red tomatoes', 28.00, 45, 'https://images.pexels.com/photos/33499935/pexels-photo-33499935.jpeg'
+  UNION ALL SELECT 'Vegetables', 'Potato 1 kg', 'Everyday potatoes', 36.00, 60, 'https://images.pexels.com/photos/15428958/pexels-photo-15428958.jpeg'
+  UNION ALL SELECT 'Snacks', 'Potato Chips', 'Classic salted chips', 20.00, 70, 'https://images.pexels.com/photos/9069287/pexels-photo-9069287.jpeg'
+  UNION ALL SELECT 'Snacks', 'Chocolate Bar', 'Milk chocolate bar', 35.00, 40, 'https://images.pexels.com/photos/6167328/pexels-photo-6167328.jpeg'
+  UNION ALL SELECT 'Beverages', 'Orange Juice 1 L', 'Orange fruit drink', 95.00, 20, 'https://images.pexels.com/photos/8679343/pexels-photo-8679343.jpeg'
+  UNION ALL SELECT 'Beverages', 'Bottled Water 1 L', 'Drinking water', 20.00, 100, 'https://images.pexels.com/photos/11860562/pexels-photo-11860562.jpeg'
+  UNION ALL SELECT 'Bakery', 'Bread Loaf', 'Soft sandwich bread', 40.00, 30, 'https://images.pexels.com/photos/19495599/pexels-photo-19495599.jpeg'
+  UNION ALL SELECT 'Dairy', 'Butter 100 g', 'Creamy salted butter', 58.00, 25, 'https://images.pexels.com/photos/4182678/pexels-photo-4182678.jpeg'
 ) v
 JOIN categories c ON c.name = v.category
 WHERE NOT EXISTS (SELECT 1 FROM products p WHERE p.name = v.name);
