@@ -1,3 +1,8 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-response.sendRedirect(request.getContextPath() + "/products");
+    if (session.getAttribute("loggedInUser") != null) {
+        response.sendRedirect(request.getContextPath() + "/products");
+    } else {
+        response.sendRedirect(request.getContextPath() + "/login");
+    }
 %>
