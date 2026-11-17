@@ -10,7 +10,7 @@ import com.blinkit.util.DBConnection;
 
 public class UserDAO {
 
-    public boolean registerUser(User user) {
+    public void registerUser(User user) throws SQLException {
         String sql = "INSERT INTO users (full_name, email, phone, delivery_address, password) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -19,10 +19,7 @@ public class UserDAO {
             ps.setString(3, user.getPhone());
             ps.setString(4, user.getDeliveryAddress());
             ps.setString(5, user.getPassword());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            ps.executeUpdate();
         }
     }
 

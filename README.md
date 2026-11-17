@@ -94,6 +94,7 @@ This web application has no Java `main` method. Tomcat starts the application fr
 
 | Table | Description |
 |---|---|
+| `users` | Registered customer accounts and contact details |
 | `categories` | Unique product category names |
 | `products` | Product details, category, price, stock, and image URL |
 | `orders` | Customer, delivery address, total, status, and creation time |
@@ -135,7 +136,7 @@ The generated WAR is `target/blinkit-replica.war`.
    ```
 
    If your local root account has no password, omit `-p`. Adjust the command for your local database installation.
-3. Confirm that the `blinkit_replica` database contains `categories`, `products`, `orders`, and `order_items`.
+3. Confirm that the `blinkit_replica` database contains `users`, `categories`, `products`, `orders`, and `order_items`.
 4. Ensure the JDBC settings in `DBConnection.java` match your local database.
 
 The SQL script inserts its sample categories and avoids adding a product again when a product with the same name already exists.

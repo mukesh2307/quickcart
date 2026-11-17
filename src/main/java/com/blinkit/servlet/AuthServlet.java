@@ -1,6 +1,9 @@
 package com.blinkit.servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.blinkit.dao.UserDAO;
 import com.blinkit.model.User;
@@ -14,6 +17,7 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(urlPatterns = {"/login", "/register", "/logout"})
 public class AuthServlet extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(AuthServlet.class.getName());
     private final UserDAO userDAO = new UserDAO();
 
     @Override
@@ -49,12 +53,18 @@ public class AuthServlet extends HttpServlet {
             }
 
             User newUser = new User(fullName, email, phone, address, password);
-            if (userDAO.registerUser(newUser)) {
+            try {
+                userDAO.registerUser(newUser);
                 req.setAttribute("mode", "login");
                 req.setAttribute("success", "Account created successfully! Please login.");
-            } else {
+            } catch (SQLException e) {
                 req.setAttribute("mode", "register");
-                req.setAttribute("error", "Registration failed. Email may already exist.");
+                if (e.getErrorCode() == 1062) {
+                    req.setAttribute("error", "This email is already registered. Please use another email or log in.");
+                } else {
+                    LOGGER.log(Level.SEVERE, "Unable to register user.", e);
+                    req.setAttribute("error", "Account creation failed because of a database error. Please try again later.");
+                }
             }
             req.getRequestDispatcher("/login.jsp").forward(req, resp);
 
