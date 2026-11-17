@@ -1,0 +1,20 @@
+.react-demo-card{margin:30px 0 0;padding:22px;background:#fff;border:1px solid var(--line);border-radius:17px}
+.react-demo-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.react-demo-heading h2{margin:0 0 6px;font-size:20px}
+.react-demo-heading p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.react-demo-badge{flex:none;padding:7px 10px;border-radius:20px;background:#e8f5df;color:var(--green);font-size:11px;font-weight:800}
+.react-demo-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+.react-demo-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px;background:var(--cream);border-radius:12px}
+.react-demo-product{display:flex;flex-direction:column;gap:4px;min-width:0}
+.react-demo-product strong{font-size:13px}
+.react-demo-product span{color:var(--muted);font-size:12px}
+.react-demo-controls{display:flex;align-items:center;gap:9px}
+.react-demo-controls button{width:30px;height:30px;border:1px solid #c9ddc0;border-radius:9px;background:#fff;color:var(--green);font-size:18px;font-weight:700;cursor:pointer}
+.react-demo-controls button:focus-visible,.react-demo-clear:focus-visible{outline:3px solid #24834a55;outline-offset:2px}
+.react-demo-controls output{min-width:14px;text-align:center;font-size:13px;font-weight:800}
+.react-demo-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:15px;border-top:1px solid var(--line)}
+.react-demo-total{font-size:14px;font-weight:800}
+.react-demo-total small{margin-left:8px;color:var(--muted);font-size:12px;font-weight:500}
+.react-demo-clear{padding:9px 12px;border:0;border-radius:9px;background:#eef5e9;color:var(--green);font-size:12px;font-weight:800;cursor:pointer}
+.react-demo-clear:disabled{opacity:.5;cursor:default}
+@media(max-width:650px){.react-demo-card{padding:16px}.react-demo-heading{flex-direction:column}.react-demo-items{grid-template-columns:1fr}.react-demo-row{padding:11px}}
