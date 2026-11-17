@@ -19,6 +19,7 @@ A student project that demonstrates a grocery shopping workflow with Java Servle
 - Checkout with customer name and delivery address.
 - Persist orders and order items in a JDBC transaction.
 - Check stock and decrement inventory when an order is successfully placed.
+- Demonstrate a React-powered interactive basket preview on the products page.
 - Sample categories and products in the database initialization script.
 
 ## Technology stack
@@ -125,6 +126,8 @@ mvn clean package
 ```
 
 The generated WAR is `target/blinkit-replica.war`.
+
+The products page includes a small React basket demo; its React libraries load from unpkg, so an internet connection is needed to show that widget. It is a client-side demonstration and does not change the application's server-side cart.
 
 ## Set up the database
 

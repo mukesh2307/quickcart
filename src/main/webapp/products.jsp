@@ -5,6 +5,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>QuickCart | Groceries made easy</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/react-demo.css">
 </head><body>
 <header class="topbar">
   <a class="brand" href="${pageContext.request.contextPath}/products"><span class="brand-mark">Q</span> quick<span>cart</span></a>
@@ -19,6 +20,7 @@
     <div class="hero-art" aria-hidden="true"><span>🥦</span><span>🍎</span><span>🥛</span><span>🥖</span></div>
   </section>
   <c:if test="${not empty sessionScope.flash}"><div class="notice"><c:out value="${sessionScope.flash}"/></div><c:remove var="flash" scope="session"/></c:if>
+  <div id="react-basket-demo" aria-live="polite">Loading React basket demo…</div>
   <section id="catalogue" class="catalogue">
     <div class="section-heading"><div><p class="eyebrow">THE DAILY PICKS</p><h2>Shop groceries</h2></div><span class="muted">${products.size()} products</span></div>
     <form class="filters" method="get" action="${pageContext.request.contextPath}/products">
@@ -49,5 +51,8 @@
       </c:forEach>
     </div>
   </section>
-</main><footer class="footer">QuickCart · A Java JSP + JDBC college project</footer>
+  </main><footer class="footer">QuickCart · A Java JSP + JDBC college project</footer>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/react-basket-demo.js"></script>
 </body></html>
