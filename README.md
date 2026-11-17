@@ -162,16 +162,15 @@ Add screenshots to a `screenshots/` directory and link them here. No screenshots
 
 ## Team contributions
 
-Replace the placeholders with the project team's names and contributions.
 
 | Team member | Contribution |
 |---|---|
-| Member 1 — _Name_ | _Contribution_ |
-| Member 2 — _Name_ | _Contribution_ |
-| Member 3 — _Name_ | _Contribution_ |
-| Member 4 — _Name_ | _Contribution_ |
-| Member 5 — _Name_ | _Contribution_ |
-| Member 6 — _Name_ | _Contribution_ |
+| Member 1 — _MUKESH_ | _Contribution_ |
+| Member 2 — _MARIYAPPAN_ | _Contribution_ |
+| Member 3 — _SILVIYA_ | _Contribution_ |
+| Member 4 — _VAISHNAVI_ | _Contribution_ |
+| Member 5 — _RANJITH KUMAR_ | _Contribution_ |
+| Member 6 — _JESSICA SHALINI_ | _Contribution_ |
 
 ## Limitations and future enhancements
 
