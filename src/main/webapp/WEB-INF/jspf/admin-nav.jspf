@@ -1,0 +1,14 @@
+<header class="topbar admin-topbar">
+  <a class="brand" href="${pageContext.request.contextPath}/admin/dashboard"><span class="brand-mark">Q</span> quick<span>cart</span><span class="admin-label">ADMIN</span></a>
+  <nav class="admin-nav" aria-label="Admin navigation">
+    <a href="${pageContext.request.contextPath}/admin/dashboard">Dashboard</a>
+    <a href="${pageContext.request.contextPath}/admin/inventory">Inventory</a>
+    <a href="${pageContext.request.contextPath}/admin/orders">Orders</a>
+    <a href="${pageContext.request.contextPath}/admin/popular-items">Frequently bought</a>
+    <a href="${pageContext.request.contextPath}/admin/order-history">Order history</a>
+  </nav>
+  <form method="post" action="${pageContext.request.contextPath}/admin/logout">
+    <input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.adminCsrfToken}'/>">
+    <button class="admin-logout" type="submit">Log out</button>
+  </form>
+</header>
