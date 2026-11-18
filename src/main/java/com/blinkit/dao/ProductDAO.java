@@ -39,6 +39,21 @@ public class ProductDAO {
         }
     }
 
+    public boolean updateStock(int productId, int stock) throws SQLException {
+        String sql = "UPDATE products SET stock=? WHERE id=?";
+        try (Connection c = DBConnection.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, stock);
+            ps.setInt(2, productId);
+            if (ps.executeUpdate() == 1) return true;
+            try (PreparedStatement exists = c.prepareStatement("SELECT 1 FROM products WHERE id=?")) {
+                exists.setInt(1, productId);
+                try (ResultSet rs = exists.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        }
+    }
+
     public List<String> findCategories() throws SQLException {
         List<String> list = new ArrayList<>();
         try (Connection c=DBConnection.getConnection();

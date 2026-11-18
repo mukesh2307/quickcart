@@ -53,12 +53,13 @@
       h("div", { className: "react-demo-items" },
         products.map(function (product) {
           const quantity = quantities[product.id] || 0;
+          const availableStock = Math.max(0, product.stock - product.inCart);
           return h("div", { className: "react-demo-row", key: product.id },
             h("div", { className: "react-demo-product" },
               h("small", null, product.category),
               h("strong", null, product.name),
               h("span", null, "₹" + (product.pricePaise / 100).toFixed(2)),
-              h("small", null, "In cart: " + product.inCart + " · " + (product.stock - product.inCart) + " available")
+              h("small", null, "In cart: " + product.inCart + " · " + availableStock + " available")
             ),
             h("div", { className: "react-demo-controls" },
               h("button", {
@@ -72,7 +73,7 @@
                 type: "button",
                 onClick: function () { changeQuantity(product, 1); },
                 "aria-label": "Add one " + product.name,
-                disabled: quantity >= product.stock - product.inCart
+                disabled: quantity >= availableStock
               }, "+")
             )
           );

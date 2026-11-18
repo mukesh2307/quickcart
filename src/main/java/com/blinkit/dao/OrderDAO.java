@@ -1,12 +1,99 @@
 package com.blinkit.dao;
 
 import com.blinkit.model.CartItem;
+import com.blinkit.model.OrderLine;
+import com.blinkit.model.OrderSummary;
+import com.blinkit.model.PopularProduct;
 import com.blinkit.util.DBConnection;
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class OrderDAO {
+    public List<OrderSummary> findOrders(int limit) throws SQLException {
+        String sql = "SELECT id,customer_name,delivery_address,total_amount,status,created_at " +
+                "FROM orders ORDER BY created_at DESC,id DESC LIMIT ?";
+        List<OrderSummary> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, limit);
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) orders.add(mapOrder(results));
+            }
+        }
+        return orders;
+    }
+
+    public List<OrderSummary> findOrderHistory() throws SQLException {
+        String sql = "SELECT id,customer_name,delivery_address,total_amount,status,created_at " +
+                "FROM orders ORDER BY created_at DESC,id DESC";
+        List<OrderSummary> orders = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet results = statement.executeQuery()) {
+            while (results.next()) orders.add(mapOrder(results));
+        }
+        return orders;
+    }
+
+    public OrderSummary findOrder(long orderId) throws SQLException {
+        String sql = "SELECT id,customer_name,delivery_address,total_amount,status,created_at FROM orders WHERE id=?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, orderId);
+            try (ResultSet results = statement.executeQuery()) {
+                return results.next() ? mapOrder(results) : null;
+            }
+        }
+    }
+
+    public List<OrderLine> findOrderLines(long orderId) throws SQLException {
+        String sql = "SELECT product_name,quantity,unit_price FROM order_items WHERE order_id=? ORDER BY id";
+        List<OrderLine> lines = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, orderId);
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) {
+                    lines.add(new OrderLine(results.getString("product_name"),
+                            results.getInt("quantity"), results.getBigDecimal("unit_price")));
+                }
+            }
+        }
+        return lines;
+    }
+
+    public List<PopularProduct> findPopularProducts(int limit) throws SQLException {
+        String sql = "SELECT p.id,p.name,c.name AS category_name,p.price,p.stock," +
+                "SUM(oi.quantity) AS quantity_sold,COUNT(DISTINCT oi.order_id) AS order_count " +
+                "FROM order_items oi JOIN orders o ON o.id=oi.order_id " +
+                "JOIN products p ON p.id=oi.product_id JOIN categories c ON c.id=p.category_id " +
+                "WHERE o.status='PLACED' GROUP BY p.id,p.name,c.name,p.price,p.stock " +
+                "ORDER BY quantity_sold DESC,order_count DESC,p.name ASC LIMIT ?";
+        List<PopularProduct> products = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, limit);
+            try (ResultSet results = statement.executeQuery()) {
+                while (results.next()) {
+                    products.add(new PopularProduct(results.getInt("id"), results.getString("name"),
+                            results.getString("category_name"), results.getBigDecimal("price"),
+                            results.getInt("stock"), results.getLong("quantity_sold"),
+                            results.getLong("order_count")));
+                }
+            }
+        }
+        return products;
+    }
+
+    private OrderSummary mapOrder(ResultSet results) throws SQLException {
+        return new OrderSummary(results.getLong("id"), results.getString("customer_name"),
+                results.getString("delivery_address"), results.getBigDecimal("total_amount"),
+                results.getString("status"), results.getTimestamp("created_at"));
+    }
+
     public long placeOrder(String customerName, String address, Map<Integer, CartItem> cart)
             throws SQLException, OutOfStockException {
         if (cart == null || cart.isEmpty()) throw new IllegalArgumentException("Your cart is empty.");

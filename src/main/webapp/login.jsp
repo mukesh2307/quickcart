@@ -127,6 +127,10 @@
                                 <i class="bi bi-arrow-right ms-2"></i>
                             </button>
                         </form>
+                        <a class="btn btn-outline-dark btn-lg w-100 fw-semibold mt-3"
+                           href="<%= request.getContextPath() %>/admin/login">
+                            <i class="bi bi-speedometer2 me-2"></i>Admin login
+                        </a>
                     </div>
                 </div>
             </div>
