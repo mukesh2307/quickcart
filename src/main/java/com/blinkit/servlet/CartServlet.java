@@ -41,6 +41,52 @@ public class CartServlet extends HttpServlet {
                     else if (item.getQuantity()<p.getStock()) item.setQuantity(item.getQuantity()+1);
                     req.getSession().setAttribute("flash",p.getName()+" added to your cart.");
                 }
+            } else if ("addSelected".equals(action)) {
+                String[] productIds=req.getParameterValues("productId");
+                String[] quantities=req.getParameterValues("quantity");
+                if (productIds==null || quantities==null || productIds.length==0 || productIds.length!=quantities.length) {
+                    resp.sendError(400,"Invalid selected products or quantities.");
+                    return;
+                }
+
+                ProductDAO dao=new ProductDAO();
+                Map<Integer,Long> additions=new LinkedHashMap<>();
+                for (int i=0;i<productIds.length;i++) {
+                    int id=Integer.parseInt(productIds[i]);
+                    int quantity=Integer.parseInt(quantities[i]);
+                    if (quantity<1) {
+                        resp.sendError(400,"Selected quantities must be positive.");
+                        return;
+                    }
+                    long totalQuantity=additions.getOrDefault(id,0L)+quantity;
+                    if (totalQuantity>Integer.MAX_VALUE) {
+                        resp.sendError(400,"Selected quantity is too large.");
+                        return;
+                    }
+                    additions.put(id,totalQuantity);
+                }
+
+                Map<Integer,Product> selectedProducts=new LinkedHashMap<>();
+                for (Map.Entry<Integer,Long> addition:additions.entrySet()) {
+                    Product p=dao.findById(addition.getKey());
+                    if (p==null) { resp.sendError(404,"Product not found."); return; }
+                    int inCart=cart.containsKey(p.getId()) ? cart.get(p.getId()).getQuantity() : 0;
+                    if (inCart+addition.getValue()>p.getStock()) {
+                        req.getSession().setAttribute("flash","There is not enough stock to add the selected quantities.");
+                        resp.sendRedirect(req.getContextPath()+"/cart");
+                        return;
+                    }
+                    selectedProducts.put(p.getId(),p);
+                }
+
+                for (Map.Entry<Integer,Long> addition:additions.entrySet()) {
+                    Product p=selectedProducts.get(addition.getKey());
+                    CartItem item=cart.get(p.getId());
+                    int quantity=addition.getValue().intValue();
+                    if (item==null) cart.put(p.getId(),new CartItem(p.getId(),p.getName(),p.getPrice(),p.getImageUrl(),quantity));
+                    else item.setQuantity(item.getQuantity()+quantity);
+                }
+                req.getSession().setAttribute("flash","Selected items added to your cart.");
             } else if ("update".equals(action)) {
                 int id=Integer.parseInt(req.getParameter("productId"));
                 int quantity=Integer.parseInt(req.getParameter("quantity"));

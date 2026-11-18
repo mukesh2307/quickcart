@@ -20,7 +20,17 @@
     <div class="hero-art" aria-hidden="true"><span>🥦</span><span>🍎</span><span>🥛</span><span>🥖</span></div>
   </section>
   <c:if test="${not empty sessionScope.flash}"><div class="notice"><c:out value="${sessionScope.flash}"/></div><c:remove var="flash" scope="session"/></c:if>
-  <div id="react-basket-demo" aria-live="polite">Loading React basket demo…</div>
+  <div id="react-basket-demo" data-cart-url="${pageContext.request.contextPath}/cart" aria-live="polite">
+    <c:forEach var="product" items="${products}">
+      <c:set var="quickCartItem" value="${sessionScope.cart[product.id]}"/>
+      <span hidden data-product-id="<c:out value='${product.id}'/>"
+        data-name="<c:out value='${product.name}'/>"
+        data-category="<c:out value='${product.categoryName}'/>"
+        data-price="<c:out value='${product.price}'/>"
+        data-stock="<c:out value='${product.stock}'/>"
+        data-in-cart="<c:out value='${empty quickCartItem ? 0 : quickCartItem.quantity}'/>"></span>
+    </c:forEach>
+  </div>
   <section id="catalogue" class="catalogue">
     <div class="section-heading"><div><p class="eyebrow">THE DAILY PICKS</p><h2>Shop groceries</h2></div><span class="muted">${products.size()} products</span></div>
     <form class="filters" method="get" action="${pageContext.request.contextPath}/products">

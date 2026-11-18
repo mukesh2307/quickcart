@@ -12,6 +12,7 @@ request.setAttribute("cartTotal",total);
 <div class="delivery"><strong>Your shopping cart</strong><small>Review your items before checkout</small></div>
 <a class="cart-link" href="${pageContext.request.contextPath}/products">← Continue shopping</a></header>
 <main class="container narrow"><div class="section-heading"><div><p class="eyebrow">YOUR BAG</p><h1>Shopping cart</h1></div></div>
+<c:if test="${not empty sessionScope.flash}"><div class="notice"><c:out value="${sessionScope.flash}"/></div><c:remove var="flash" scope="session"/></c:if>
 <c:choose><c:when test="${empty sessionScope.cart}">
 <div class="empty-state"><div class="empty-icon">🛒</div><h2>Your cart is empty</h2><p>Add a few everyday essentials to get started.</p>
 <a class="button button-dark" href="${pageContext.request.contextPath}/products">Browse products</a></div>
