@@ -76,3 +76,21 @@ FROM (
 ) v
 JOIN categories c ON c.name = v.category
 WHERE NOT EXISTS (SELECT 1 FROM products p WHERE p.name = v.name);
+
+UPDATE products p
+JOIN (
+  SELECT 'Fresh Milk 500 ml' name, 'https://images.pexels.com/photos/6804192/pexels-photo-6804192.jpeg' image_url
+  UNION ALL SELECT 'Farm Eggs (6 pcs)', 'https://images.pexels.com/photos/6845644/pexels-photo-6845644.jpeg'
+  UNION ALL SELECT 'Banana (6 pcs)', 'https://images.pexels.com/photos/30893278/pexels-photo-30893278.jpeg'
+  UNION ALL SELECT 'Apples (4 pcs)', 'https://images.pexels.com/photos/12955951/pexels-photo-12955951.jpeg'
+  UNION ALL SELECT 'Tomato 500 g', 'https://images.pexels.com/photos/33499935/pexels-photo-33499935.jpeg'
+  UNION ALL SELECT 'Potato 1 kg', 'https://images.pexels.com/photos/15428958/pexels-photo-15428958.jpeg'
+  UNION ALL SELECT 'Potato Chips', 'https://images.pexels.com/photos/9069287/pexels-photo-9069287.jpeg'
+  UNION ALL SELECT 'Chocolate Bar', 'https://images.pexels.com/photos/6167328/pexels-photo-6167328.jpeg'
+  UNION ALL SELECT 'Orange Juice 1 L', 'https://images.pexels.com/photos/8679343/pexels-photo-8679343.jpeg'
+  UNION ALL SELECT 'Bottled Water 1 L', 'https://images.pexels.com/photos/11860562/pexels-photo-11860562.jpeg'
+  UNION ALL SELECT 'Bread Loaf', 'https://images.pexels.com/photos/19495599/pexels-photo-19495599.jpeg'
+  UNION ALL SELECT 'Butter 100 g', 'https://images.pexels.com/photos/4182678/pexels-photo-4182678.jpeg'
+) seeded ON seeded.name = p.name
+SET p.image_url = seeded.image_url
+WHERE p.image_url IS NULL OR TRIM(p.image_url) = '';

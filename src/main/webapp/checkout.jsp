@@ -15,7 +15,7 @@ request.setAttribute("checkoutTotal",total);
 <div class="checkout-grid"><form class="checkout-form" method="post" action="${pageContext.request.contextPath}/checkout">
 <label for="customerName">Your name</label><input id="customerName" name="customerName" maxlength="120" required placeholder="Enter your full name">
 <label for="address">Delivery address</label><textarea id="address" name="address" maxlength="500" rows="4" required placeholder="House number, street, area, city, PIN code"></textarea>
-<div class="payment-note"><strong>Demo checkout</strong><p>No online payment is collected in this college project.</p></div>
+<div class="payment-note"><strong>Payment</strong><p>Online payment is not available at this time.</p></div>
 <button class="button button-dark full-button" type="submit">Place order · ₹<c:out value="${checkoutTotal}"/></button>
 </form><aside class="summary-card"><p class="eyebrow">ORDER SUMMARY</p>
 <c:forEach var="item" items="${sessionScope.cart.values()}"><div class="summary-line"><span><c:out value="${item.name}"/> × ${item.quantity}</span><strong>₹<c:out value="${item.lineTotal}"/></strong></div></c:forEach>

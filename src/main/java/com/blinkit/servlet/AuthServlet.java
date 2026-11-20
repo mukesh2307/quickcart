@@ -24,9 +24,7 @@ public class AuthServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
         if ("/logout".equals(path)) {
-            HttpSession session = req.getSession(false);
-            if (session != null) session.invalidate();
-            resp.sendRedirect(req.getContextPath() + "/login");
+            logout(req, resp);
             return;
         }
         req.setAttribute("mode", "/register".equals(path) ? "register" : "login");
@@ -37,7 +35,9 @@ public class AuthServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getServletPath();
 
-        if ("/register".equals(path)) {
+        if ("/logout".equals(path)) {
+            logout(req, resp);
+        } else if ("/register".equals(path)) {
             String fullName = req.getParameter("fullName");
             String email = req.getParameter("email");
             String phone = req.getParameter("phone");
@@ -83,5 +83,12 @@ public class AuthServlet extends HttpServlet {
                 req.getRequestDispatcher("/login.jsp").forward(req, resp);
             }
         }
+
+    }
+
+    private void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null) session.invalidate();
+        resp.sendRedirect(req.getContextPath() + "/login");
     }
 }

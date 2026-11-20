@@ -1,7 +1,7 @@
 (function () {
   const mountNode = document.getElementById("react-basket-demo");
   if (!window.React || !window.ReactDOM) {
-    mountNode.textContent = "Frequently purchased items could not load. Check your internet connection and refresh the page.";
+    mountNode.textContent = "Featured items are temporarily unavailable.";
     mountNode.setAttribute("role", "alert");
     return;
   }
@@ -12,12 +12,15 @@
       id: node.dataset.productId,
       name: node.dataset.name,
       category: node.dataset.category,
+      imageUrl: node.dataset.imageUrl,
       pricePaise: Math.round(Number(node.dataset.price) * 100),
       stock: Number(node.dataset.stock),
       inCart: Number(node.dataset.inCart)
     };
-  });
+  }).slice(0, 4);
   const cartUrl = mountNode.dataset.cartUrl;
+  const search = mountNode.dataset.search;
+  const category = mountNode.dataset.category;
 
   function BasketDemo() {
     const [quantities, setQuantities] = window.React.useState({});
@@ -55,6 +58,12 @@
           const quantity = quantities[product.id] || 0;
           const availableStock = Math.max(0, product.stock - product.inCart);
           return h("div", { className: "react-demo-row", key: product.id },
+            h("img", {
+              className: "react-demo-image",
+              src: product.imageUrl,
+              alt: "",
+              loading: "lazy"
+            }),
             h("div", { className: "react-demo-product" },
               h("small", null, product.category),
               h("strong", null, product.name),
@@ -86,6 +95,8 @@
         ),
         h("form", { method: "post", action: cartUrl, className: "react-demo-actions" },
           h("input", { type: "hidden", name: "action", value: "addSelected" }),
+          h("input", { type: "hidden", name: "q", value: search }),
+          h("input", { type: "hidden", name: "category", value: category }),
           selectedProducts.map(function (product) {
             return h(window.React.Fragment, { key: product.id },
               h("input", { type: "hidden", name: "productId", value: product.id }),
@@ -96,7 +107,7 @@
             type: "submit",
             className: "button button-dark",
             disabled: itemCount === 0
-          }, "Add selected to cart"),
+          }, "Add selected items"),
           h("button", {
             type: "button",
             className: "react-demo-clear",

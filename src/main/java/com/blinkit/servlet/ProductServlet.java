@@ -1,11 +1,13 @@
 package com.blinkit.servlet;
 
 import com.blinkit.dao.ProductDAO;
+import com.blinkit.model.CartItem;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 @WebServlet("/products")
 public class ProductServlet extends HttpServlet {
@@ -17,9 +19,19 @@ public class ProductServlet extends HttpServlet {
             req.setAttribute("categories",dao.findCategories());
             req.setAttribute("search",search==null?"":search);
             req.setAttribute("selectedCategory",category==null?"all":category);
+            req.setAttribute("cartItemCount",getCartItemCount(req));
             req.getRequestDispatcher("/products.jsp").forward(req,resp);
         } catch (SQLException e) {
             throw new ServletException("Unable to load products. Check XAMPP and the database import.",e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private int getCartItemCount(HttpServletRequest req) {
+        HttpSession session=req.getSession(false);
+        if (session==null) return 0;
+        Map<Integer,CartItem> cart=(Map<Integer,CartItem>)session.getAttribute("cart");
+        if (cart==null) return 0;
+        return cart.values().stream().mapToInt(CartItem::getQuantity).sum();
     }
 }

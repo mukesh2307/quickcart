@@ -10,22 +10,30 @@
 <header class="topbar">
   <a class="brand" href="${pageContext.request.contextPath}/products"><span class="brand-mark">Q</span> quick<span>cart</span></a>
   <div class="delivery"><strong>Daily essentials, delivered</strong><small>Shop your everyday favourites</small></div>
-  <a class="cart-link" href="${pageContext.request.contextPath}/cart">🛒 Cart</a>
+  <div class="customer-actions">
+    <a class="cart-link" href="${pageContext.request.contextPath}/admin/login">Admin login</a>
+    <a class="cart-link" href="${pageContext.request.contextPath}/cart">Go to cart<c:if test="${cartItemCount gt 0}"><span class="cart-count"><c:out value="${cartItemCount}"/></span></c:if></a>
+    <form class="customer-logout-form" method="post" action="${pageContext.request.contextPath}/logout">
+      <button class="cart-link customer-logout" type="submit">Log out</button>
+    </form>
+  </div>
 </header>
 <main class="container">
   <section class="hero">
-    <div><p class="eyebrow">EVERYDAY ESSENTIALS</p><h1>Your groceries.<br><span>One quick stop.</span></h1>
-      <p class="hero-copy">Fresh picks, pantry staples and snacks at your fingertips.</p>
+    <div><p class="eyebrow">EVERYDAY ESSENTIALS</p><h1>Fresh groceries,<br><span>right to your door.</span></h1>
+      <p class="hero-copy">Shop fresh produce, pantry staples and daily essentials.</p>
       <a class="button button-dark" href="#catalogue">Explore products ↓</a></div>
     <div class="hero-art" aria-hidden="true"><span>🥦</span><span>🍎</span><span>🥛</span><span>🥖</span></div>
   </section>
   <c:if test="${not empty sessionScope.flash}"><div class="notice"><c:out value="${sessionScope.flash}"/></div><c:remove var="flash" scope="session"/></c:if>
-  <div id="react-basket-demo" data-cart-url="${pageContext.request.contextPath}/cart" aria-live="polite">
+  <div id="react-basket-demo" data-cart-url="${pageContext.request.contextPath}/cart"
+       data-search="<c:out value='${search}'/>" data-category="<c:out value='${selectedCategory}'/>" aria-live="polite">
     <c:forEach var="product" items="${products}">
       <c:set var="quickCartItem" value="${sessionScope.cart[product.id]}"/>
       <span hidden data-product-id="<c:out value='${product.id}'/>"
         data-name="<c:out value='${product.name}'/>"
         data-category="<c:out value='${product.categoryName}'/>"
+        data-image-url="<c:out value='${product.imageUrl}'/>"
         data-price="<c:out value='${product.price}'/>"
         data-stock="<c:out value='${product.stock}'/>"
         data-in-cart="<c:out value='${empty quickCartItem ? 0 : quickCartItem.quantity}'/>"></span>
@@ -52,6 +60,8 @@
               <c:choose><c:when test="${product.stock gt 0}">
                 <form method="post" action="${pageContext.request.contextPath}/cart">
                   <input type="hidden" name="action" value="add"><input type="hidden" name="productId" value="${product.id}">
+                  <input type="hidden" name="q" value="<c:out value='${search}'/>">
+                  <input type="hidden" name="category" value="<c:out value='${selectedCategory}'/>">
                   <button class="button button-add" type="submit">ADD +</button>
                 </form>
               </c:when><c:otherwise><button class="button" disabled>Sold out</button></c:otherwise></c:choose>
@@ -61,7 +71,7 @@
       </c:forEach>
     </div>
   </section>
-  </main><footer class="footer">QuickCart · A Java JSP + JDBC college project</footer>
+  </main><footer class="footer">QuickCart</footer>
   <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/react-basket-demo.js"></script>

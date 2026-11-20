@@ -7,6 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,9 +39,15 @@ public class CartServlet extends HttpServlet {
                 if (p.getStock()<1) req.getSession().setAttribute("flash","This product is out of stock.");
                 else {
                     CartItem item=cart.get(id);
-                    if (item==null) cart.put(id,new CartItem(id,p.getName(),p.getPrice(),p.getImageUrl(),1));
-                    else if (item.getQuantity()<p.getStock()) item.setQuantity(item.getQuantity()+1);
-                    req.getSession().setAttribute("flash",p.getName()+" added to your cart.");
+                    if (item==null) {
+                        cart.put(id,new CartItem(id,p.getName(),p.getPrice(),p.getImageUrl(),1));
+                        req.getSession().setAttribute("flash",p.getName()+" added to your cart.");
+                    } else if (item.getQuantity()<p.getStock()) {
+                        item.setQuantity(item.getQuantity()+1);
+                        req.getSession().setAttribute("flash",p.getName()+" added to your cart.");
+                    } else {
+                        req.getSession().setAttribute("flash","You've reached the available stock for "+p.getName()+".");
+                    }
                 }
             } else if ("addSelected".equals(action)) {
                 String[] productIds=req.getParameterValues("productId");
@@ -73,7 +81,7 @@ public class CartServlet extends HttpServlet {
                     int inCart=cart.containsKey(p.getId()) ? cart.get(p.getId()).getQuantity() : 0;
                     if (inCart+addition.getValue()>p.getStock()) {
                         req.getSession().setAttribute("flash","There is not enough stock to add the selected quantities.");
-                        resp.sendRedirect(req.getContextPath()+"/cart");
+                        resp.sendRedirect(productsUrl(req));
                         return;
                     }
                     selectedProducts.put(p.getId(),p);
@@ -102,11 +110,26 @@ public class CartServlet extends HttpServlet {
             } else if ("remove".equals(action)) {
                 cart.remove(Integer.parseInt(req.getParameter("productId")));
             } else if ("clear".equals(action)) cart.clear();
-            resp.sendRedirect(req.getContextPath()+"/cart");
+            if ("add".equals(action) || "addSelected".equals(action)) resp.sendRedirect(productsUrl(req));
+            else resp.sendRedirect(req.getContextPath()+"/cart");
         } catch (NumberFormatException e) {
             resp.sendError(400,"Invalid product ID or quantity.");
         } catch (SQLException e) {
             throw new ServletException("Cart operation failed.",e);
         }
+    }
+
+    private String productsUrl(HttpServletRequest req) {
+        StringBuilder url=new StringBuilder(req.getContextPath()).append("/products");
+        String search=req.getParameter("q");
+        String category=req.getParameter("category");
+        if (search!=null && !search.isBlank()) {
+            url.append("?q=").append(URLEncoder.encode(search,StandardCharsets.UTF_8));
+        }
+        if (category!=null && !category.isBlank() && !"all".equalsIgnoreCase(category)) {
+            url.append(url.indexOf("?")<0 ? "?" : "&")
+               .append("category=").append(URLEncoder.encode(category,StandardCharsets.UTF_8));
+        }
+        return url.toString();
     }
 }

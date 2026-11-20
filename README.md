@@ -158,7 +158,7 @@ The products page's React-powered frequently purchased section submits selected 
 
    There is no public admin registration or default admin password. Open `/admin/login`, or use the **Admin login** link on the customer login page.
 
-The SQL script inserts its sample categories and avoids adding a product again when a product with the same name already exists.
+The SQL script inserts its sample categories and avoids adding a product again when a product with the same name already exists. Re-importing it also fills missing image URLs for the sample products.
 
 ## Deploy to Tomcat 10.1
 

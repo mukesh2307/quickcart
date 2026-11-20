@@ -25,9 +25,16 @@
                 </span>
                 <span class="badge rounded-pill bg-dark text-white">Online Store</span>
             </a>
-            <span class="text-dark fw-semibold d-none d-sm-inline">
-                <i class="bi bi-lightning-charge-fill me-1"></i>Groceries delivered in minutes
-            </span>
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-dark fw-semibold d-none d-sm-inline">
+                    <i class="bi bi-lightning-charge-fill me-1"></i>Groceries delivered in minutes
+                </span>
+                <% if (session.getAttribute("loggedInUser") != null) { %>
+                    <form method="post" action="<%= request.getContextPath() %>/logout" class="m-0">
+                        <button class="btn btn-outline-dark fw-semibold" type="submit">Log out</button>
+                    </form>
+                <% } %>
+            </div>
         </div>
     </nav>
 
