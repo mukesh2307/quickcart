@@ -4,12 +4,9 @@ import com.blinkit.dao.OrderDAO;
 import com.blinkit.dao.ProductDAO;
 import com.blinkit.model.OrderSummary;
 import com.blinkit.model.Product;
+import com.blinkit.util.CsrfTokens;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.sql.SQLException;
-import java.util.HexFormat;
 import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,7 +17,6 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/admin/*")
 public class AdminServlet extends HttpServlet {
-    private static final SecureRandom RANDOM = new SecureRandom();
     private final ProductDAO productDAO = new ProductDAO();
     private final OrderDAO orderDAO = new OrderDAO();
 
@@ -60,15 +56,15 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        if (!validCsrfToken(req)) {
+        if (!CsrfTokens.matches(req.getSession(false), "adminCsrfToken", req.getParameter("csrfToken"))) {
             resp.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid form token.");
             return;
         }
 
         String path = req.getPathInfo();
         if ("/logout".equals(path)) {
-            req.getSession().removeAttribute("adminEmail");
-            req.getSession().removeAttribute("adminCsrfToken");
+            HttpSession session = req.getSession(false);
+            if (session != null) session.invalidate();
             resp.sendRedirect(req.getContextPath() + "/admin/login");
             return;
         }
@@ -124,20 +120,6 @@ public class AdminServlet extends HttpServlet {
     }
 
     private void ensureCsrfToken(HttpSession session) {
-        if (session.getAttribute("adminCsrfToken") == null) {
-            byte[] token = new byte[32];
-            RANDOM.nextBytes(token);
-            session.setAttribute("adminCsrfToken", HexFormat.of().formatHex(token));
-        }
-    }
-
-    private boolean validCsrfToken(HttpServletRequest req) {
-        HttpSession session = req.getSession(false);
-        if (session == null) return false;
-        String expected = (String) session.getAttribute("adminCsrfToken");
-        String supplied = req.getParameter("csrfToken");
-        return expected != null && supplied != null
-                && MessageDigest.isEqual(expected.getBytes(StandardCharsets.UTF_8),
-                        supplied.getBytes(StandardCharsets.UTF_8));
+        CsrfTokens.ensure(session, "adminCsrfToken");
     }
 }

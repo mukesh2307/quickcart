@@ -34,6 +34,7 @@ public class CartServlet extends HttpServlet {
         try {
             if ("add".equals(action)) {
                 int id=Integer.parseInt(req.getParameter("productId"));
+                if (id<1) { resp.sendError(400,"Product ID must be positive."); return; }
                 Product p=new ProductDAO().findById(id);
                 if (p==null) { resp.sendError(404,"Product not found."); return; }
                 if (p.getStock()<1) req.getSession().setAttribute("flash","This product is out of stock.");
@@ -62,7 +63,7 @@ public class CartServlet extends HttpServlet {
                 for (int i=0;i<productIds.length;i++) {
                     int id=Integer.parseInt(productIds[i]);
                     int quantity=Integer.parseInt(quantities[i]);
-                    if (quantity<1) {
+                    if (id<1 || quantity<1) {
                         resp.sendError(400,"Selected quantities must be positive.");
                         return;
                     }
@@ -98,6 +99,10 @@ public class CartServlet extends HttpServlet {
             } else if ("update".equals(action)) {
                 int id=Integer.parseInt(req.getParameter("productId"));
                 int quantity=Integer.parseInt(req.getParameter("quantity"));
+                if (id<1 || quantity<0) {
+                    resp.sendError(400,"Product ID must be positive and quantity must not be negative.");
+                    return;
+                }
                 CartItem item=cart.get(id);
                 if (item!=null) {
                     if (quantity<=0) cart.remove(id);
@@ -108,8 +113,14 @@ public class CartServlet extends HttpServlet {
                     }
                 }
             } else if ("remove".equals(action)) {
-                cart.remove(Integer.parseInt(req.getParameter("productId")));
+                int id=Integer.parseInt(req.getParameter("productId"));
+                if (id<1) { resp.sendError(400,"Product ID must be positive."); return; }
+                cart.remove(id);
             } else if ("clear".equals(action)) cart.clear();
+            else {
+                resp.sendError(400,"Unknown cart action.");
+                return;
+            }
             if ("add".equals(action) || "addSelected".equals(action)) resp.sendRedirect(productsUrl(req));
             else resp.sendRedirect(req.getContextPath()+"/cart");
         } catch (NumberFormatException e) {

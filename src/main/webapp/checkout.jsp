@@ -13,6 +13,7 @@ request.setAttribute("checkoutTotal",total);
 <main class="container narrow"><p class="eyebrow">LAST STEP</p><h1>Checkout</h1>
 <c:if test="${not empty error}"><div class="error"><c:out value="${error}"/></div></c:if>
 <div class="checkout-grid"><form class="checkout-form" method="post" action="${pageContext.request.contextPath}/checkout">
+<input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>">
 <label for="customerName">Your name</label><input id="customerName" name="customerName" maxlength="120" required placeholder="Enter your full name">
 <label for="address">Delivery address</label><textarea id="address" name="address" maxlength="500" rows="4" required placeholder="House number, street, area, city, PIN code"></textarea>
 <div class="payment-note"><strong>Payment</strong><p>Online payment is not available at this time.</p></div>

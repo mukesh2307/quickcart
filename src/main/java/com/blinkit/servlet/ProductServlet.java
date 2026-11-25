@@ -15,8 +15,18 @@ public class ProductServlet extends HttpServlet {
     @Override protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String search=req.getParameter("q"), category=req.getParameter("category");
+            if (search!=null && search.length()>100) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST,"Search text is too long.");
+                return;
+            }
+            var categories=dao.findCategories();
+            if (category!=null && !category.isBlank() && !"all".equalsIgnoreCase(category)
+                    && !categories.contains(category)) {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST,"Unknown product category.");
+                return;
+            }
             req.setAttribute("products",dao.findProducts(search,category));
-            req.setAttribute("categories",dao.findCategories());
+            req.setAttribute("categories",categories);
             req.setAttribute("search",search==null?"":search);
             req.setAttribute("selectedCategory",category==null?"all":category);
             req.setAttribute("cartItemCount",getCartItemCount(req));

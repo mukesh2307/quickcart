@@ -1,9 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
     String mode = (String) request.getAttribute("mode");
     boolean isRegister = "register".equals(mode);
-    String error = (String) request.getAttribute("error");
-    String success = (String) request.getAttribute("success");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,6 +30,7 @@
                 </span>
                 <% if (session.getAttribute("loggedInUser") != null) { %>
                     <form method="post" action="<%= request.getContextPath() %>/logout" class="m-0">
+                        <input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>">
                         <button class="btn btn-outline-dark fw-semibold" type="submit">Log out</button>
                     </form>
                 <% } %>
@@ -67,64 +67,65 @@
                     </div>
 
                     <div class="card-body p-4">
-                        <% if (error != null) { %>
-                            <div class="alert alert-danger py-2 small"><i class="bi bi-exclamation-triangle-fill me-2"></i><%= error %></div>
-                        <% } %>
-                        <% if (success != null) { %>
-                            <div class="alert alert-success py-2 small"><i class="bi bi-check-circle-fill me-2"></i><%= success %></div>
-                        <% } %>
+                        <c:if test="${not empty requestScope.error}">
+                            <div class="alert alert-danger py-2 small" role="alert"><i class="bi bi-exclamation-triangle-fill me-2"></i><c:out value="${requestScope.error}"/></div>
+                        </c:if>
+                        <c:if test="${not empty requestScope.success}">
+                            <div class="alert alert-success py-2 small" role="status"><i class="bi bi-check-circle-fill me-2"></i><c:out value="${requestScope.success}"/></div>
+                        </c:if>
 
                         <form method="post" action="<%= request.getContextPath() %><%= isRegister ? "/register" : "/login" %>">
+                            <input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>">
                             <% if (isRegister) { %>
                                 <div class="mb-3">
-                                    <label class="form-label fw-medium">Full Name</label>
+                                    <label for="fullName" class="form-label fw-medium">Full Name</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="bi bi-person text-muted"></i></span>
-                                        <input type="text" name="fullName" class="form-control" placeholder="e.g., Aarav Sharma" required>
+                                        <input id="fullName" type="text" name="fullName" class="form-control" maxlength="120" autocomplete="name" required>
                                     </div>
                                 </div>
                             <% } %>
 
                             <div class="mb-3">
-                                <label class="form-label fw-medium">Email Address</label>
+                                <label for="email" class="form-label fw-medium">Email Address</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="bi bi-envelope text-muted"></i></span>
-                                    <input type="email" name="email" class="form-control" placeholder="you@example.com" required>
+                                    <input id="email" type="email" name="email" class="form-control" maxlength="255" autocomplete="email" required>
                                 </div>
                             </div>
 
                             <% if (isRegister) { %>
                                 <div class="mb-3">
-                                    <label class="form-label fw-medium">Mobile Number</label>
+                                    <label for="phone" class="form-label fw-medium">Mobile Number</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light fw-semibold text-muted">+91</span>
-                                        <input type="tel" name="phone" class="form-control" placeholder="9876543210" pattern="[0-9]{10}" required>
+                                        <input id="phone" type="tel" name="phone" class="form-control" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" autocomplete="tel-national" required>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-medium">Default Delivery Address</label>
+                                    <label for="deliveryAddress" class="form-label fw-medium">Default Delivery Address</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="bi bi-geo-alt text-muted"></i></span>
-                                        <textarea name="deliveryAddress" class="form-control" rows="2" placeholder="Flat / House No., Street, City" required></textarea>
+                                        <textarea id="deliveryAddress" name="deliveryAddress" class="form-control" maxlength="500" rows="2" autocomplete="street-address" required></textarea>
                                     </div>
                                 </div>
                             <% } %>
 
                             <div class="mb-3">
-                                <label class="form-label fw-medium">Password</label>
+                                <label for="password" class="form-label fw-medium">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="bi bi-lock text-muted"></i></span>
-                                    <input type="password" name="password" class="form-control" placeholder="Enter your password" minlength="6" required>
+                                    <input id="password" type="password" name="password" class="form-control" minlength="<%= isRegister ? "12" : "1" %>" maxlength="72" autocomplete="<%= isRegister ? "new-password" : "current-password" %>" required>
                                 </div>
                             </div>
 
                             <% if (isRegister) { %>
                                 <div class="mb-4">
-                                    <label class="form-label fw-medium">Confirm Password</label>
+                                    <label for="confirmPassword" class="form-label fw-medium">Confirm Password</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-light"><i class="bi bi-shield-check text-muted"></i></span>
-                                        <input type="password" name="confirmPassword" class="form-control" placeholder="Re-enter your password" minlength="6" required>
+                                        <input id="confirmPassword" type="password" name="confirmPassword" class="form-control" minlength="12" maxlength="72" autocomplete="new-password" required>
                                     </div>
                                 </div>
                             <% } %>

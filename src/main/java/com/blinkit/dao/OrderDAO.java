@@ -96,7 +96,18 @@ public class OrderDAO {
 
     public long placeOrder(String customerName, String address, Map<Integer, CartItem> cart)
             throws SQLException, OutOfStockException {
+        if (customerName == null || customerName.isBlank() || customerName.length() > 120
+                || address == null || address.isBlank() || address.length() > 500) {
+            throw new IllegalArgumentException("Customer name or delivery address is invalid.");
+        }
         if (cart == null || cart.isEmpty()) throw new IllegalArgumentException("Your cart is empty.");
+        for (Map.Entry<Integer, CartItem> entry : cart.entrySet()) {
+            CartItem item = entry.getValue();
+            if (entry.getKey() == null || entry.getKey() < 1 || item == null
+                    || item.getProductId() != entry.getKey() || item.getQuantity() < 1) {
+                throw new IllegalArgumentException("The cart contains an invalid product or quantity.");
+            }
+        }
         try (Connection con = DBConnection.getConnection()) {
             con.setAutoCommit(false);
             try {

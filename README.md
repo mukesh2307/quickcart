@@ -1,6 +1,6 @@
-# Blinkit Replica — Java Web Application
+# QuickCart — Java Web Application
 
-A student project that demonstrates a grocery shopping workflow with Java Servlets, JSP, JDBC, and MySQL. Browse and search a product catalogue, manage a session-based cart, and place an order with inventory checks.
+A grocery shopping application built with Java Servlets, JSP, JDBC, and MySQL. Browse and search a product catalogue, manage a session-based cart, and place an order with inventory checks.
 
 > This is an educational local demo, not a production-ready shopping or payment system.
 
@@ -67,12 +67,14 @@ JSP pages render the user interface. Servlets handle HTTP requests and coordinat
 │       │   ├── dao/              # Product, admin, user, and order database access
 │       │   ├── model/            # Product, cart, and order models
 │       │   ├── servlet/          # Customer and administrator request handlers
-│       │   └── util/             # JDBC connection and admin password utilities
+│       │   ├── filter/           # Authentication, CSRF, JSP, and response-header filters
+│       │   └── util/             # JDBC connection, password, CSRF, and session utilities
 │       └── webapp/
 │           ├── WEB-INF/web.xml   # Web application descriptor
 │           ├── css/style.css
 │           └── *.jsp             # Application views
 ├── screenshots/                  # Optional project screenshots
+├── .env.example                  # Placeholder environment configuration
 ├── pom.xml                       # Maven build configuration
 └── README.md
 ```
@@ -102,18 +104,41 @@ The web application is deployed as a WAR and has no runtime application `main` m
 
 | Table | Description |
 |---|---|
-| `users` | Registered customer accounts and contact details |
+| `users` | Registered customer accounts, contact details, and BCrypt password hashes |
 | `admin_users` | Privately provisioned admin accounts with PBKDF2 password hashes |
 | `categories` | Unique product category names |
 | `products` | Product details, category, price, stock, and image URL |
 | `orders` | Customer, delivery address, total, status, and creation time |
 | `order_items` | Product and quantity snapshots associated with an order |
 
-### MySQL connection configuration
+### Database and runtime configuration
 
-For the local XAMPP demo, the existing `DBConnection` class uses `localhost:3306`, database `blinkit_replica`, username `root`, and an empty password. These are sample local-development settings only, not production credentials. If your local MySQL setup differs, update the connection constants in `src/main/java/com/blinkit/util/DBConnection.java` for your own machine and do not commit real passwords.
+The application reads `DB_URL`, `DB_USER`, and `DB_PASSWORD` from the process environment; startup/database access fails if any are missing. Copy `.env.example` only as a reference: Java and Tomcat do **not** load `.env` files automatically. Configure variables in the Tomcat service environment or `setenv.bat`, and never commit real credentials.
 
-The application currently keeps these settings in source code. For a deployed or shared environment, use a least-privilege database account and move credentials to a server-side environment/configuration mechanism (for example, a Tomcat-managed JNDI DataSource). Do not put credentials in Git, JSPs, or browser code.
+For local development, use a dedicated MySQL account rather than `root`. After creating/importing the database with an administrative account, grant the application only the operations it needs:
+
+```sql
+CREATE USER 'quickcart_app'@'localhost' IDENTIFIED BY 'REPLACE_WITH_A_LOCAL_SECRET';
+GRANT SELECT, INSERT, UPDATE, DELETE ON blinkit_replica.* TO 'quickcart_app'@'localhost';
+```
+
+Set `DB_URL` to `jdbc:mysql://localhost:3306/blinkit_replica?sslMode=DISABLED` for a local-only MySQL instance. For a remote database, use `sslMode=VERIFY_IDENTITY` with a trusted server certificate; remote non-TLS connections and `allowPublicKeyRetrieval=true` are rejected. Keep the username and password in their separate environment variables, not in the JDBC URL.
+
+Other supported settings:
+
+| Variable | Default | Purpose |
+|---|---:|---|
+| `BCRYPT_COST` | `12` | Customer BCrypt work factor; accepted range 10–16 |
+| `SESSION_COOKIE_SECURE` | Container default | Set `true` behind HTTPS; leave false for local HTTP |
+| `HSTS_ENABLED` | `false` | Emit HSTS only when enabled and the request is HTTPS |
+| `LOGIN_MAX_FAILURES` | `5` | Failures before temporary IP-based throttling; range 3–20 |
+| `LOGIN_WINDOW_SECONDS` | `300` | Failure counting window; range 30–3600 |
+| `LOGIN_LOCK_SECONDS` | `60` | Initial throttle; range 30–600 |
+| `LOGIN_MAX_LOCK_SECONDS` | `900` | Maximum progressive throttle; range 60–3600 |
+
+The login limiter is in-memory and per application instance. Behind a reverse proxy, configure Tomcat's trusted proxy handling so `getRemoteAddr()` reflects the actual client. Multi-instance deployments need a shared rate-limiting store. Tomcat sets the session cookie `HttpOnly` and `SameSite=Lax`; session timeout is 30 minutes. Enable `SESSION_COOKIE_SECURE=true` only when the browser reaches the application over HTTPS.
+
+Customer state-changing forms and requests use session CSRF tokens. Admin operations retain their CSRF checks. Authenticated/dynamic responses receive `no-store`; CSP, frame, MIME-sniffing, and referrer headers are also set. HSTS is intentionally opt-in.
 
 ## Prerequisites
 
@@ -137,28 +162,48 @@ The generated WAR is `target/blinkit-replica.war`.
 
 The products page's React-powered frequently purchased section submits selected quantities to the server-side cart. The admin frequently bought page uses React for search and ranking controls, with a server-rendered table fallback. React libraries load from unpkg, so an internet connection is needed for those enhancements.
 
+Run the automated unit tests with:
+
+```bash
+mvn test
+```
+
 ## Set up the database
 
-1. Start MySQL in XAMPP (Apache in XAMPP is not required).
-2. Create and populate the database by importing `database/blinkit_replica.sql` with phpMyAdmin, MySQL Workbench, or the MySQL command-line client. For example:
+Use one database, `blinkit_replica`, and one setup file, `database/blinkit_replica.sql`. This file creates the final schema and sample products; do not run separate migration scripts.
 
-   ```bash
-   mysql -u root -p < database/blinkit_replica.sql
+> **Fresh setup only:** Dropping the existing database deletes its customer accounts, admin accounts, orders, and inventory changes. Back up anything you need first.
+
+1. Start **MySQL** in the XAMPP Control Panel. XAMPP Apache is not needed for this Java app.
+2. Open `http://localhost/phpmyadmin`. If `blinkit_replica` already exists and you want a clean setup, select it, choose **Operations**, then **Drop the database**. Alternatively, run `DROP DATABASE IF EXISTS blinkit_replica;` in phpMyAdmin's SQL tab. Do not do this if you need to keep its data.
+3. In phpMyAdmin, select **Import**, choose `database/blinkit_replica.sql`, and click **Go**. The script creates the database and all required tables and sample products. You should only need to import this one file.
+4. In phpMyAdmin's SQL tab, create the app's database login. Replace the sample password with your own and keep it for the Tomcat configuration:
+
+   ```sql
+   CREATE USER 'quickcart_app'@'localhost' IDENTIFIED BY 'ChooseYourOwnLocalPassword';
+   GRANT SELECT, INSERT, UPDATE, DELETE ON blinkit_replica.* TO 'quickcart_app'@'localhost';
    ```
 
-   If your local root account has no password, omit `-p`. Adjust the command for your local database installation.
-3. Confirm that the `blinkit_replica` database contains `users`, `admin_users`, `categories`, `products`, `orders`, and `order_items`.
-4. Ensure the JDBC settings in `DBConnection.java` match your local database.
-5. Create an admin account: build the project, then run `java -cp target/classes com.blinkit.util.AdminCredentialTool` from a terminal with hidden password input. Use a password of at least 12 characters. Copy the generated hash and insert the account in MySQL:
+   If MySQL says the user already exists, skip `CREATE USER` and run only the `GRANT` statement.
+5. Configure Tomcat's `bin\setenv.bat` with the following lines. Change `3306` if MySQL in XAMPP uses a different port, and use the password you chose above:
+
+   ```bat
+   set "DB_URL=jdbc:mysql://localhost:3306/blinkit_replica?sslMode=DISABLED"
+   set "DB_USER=quickcart_app"
+   set "DB_PASSWORD=ChooseYourOwnLocalPassword"
+   ```
+
+   Restart Tomcat after changing this file.
+6. Build and deploy the app as described below. If you rebuild after making code changes, copy the new `target\blinkit-replica.war` into Tomcat's `webapps` folder and restart Tomcat.
+
+To create an administrator account, build the project, then run `java -cp target/classes com.blinkit.util.AdminCredentialTool` from a terminal with hidden password input. Use a password of at least 12 characters. Copy the generated hash and insert the account in phpMyAdmin's SQL tab:
 
    ```sql
    INSERT INTO admin_users (email, password_hash)
    VALUES ('admin@example.com', 'PASTE_GENERATED_HASH_HERE');
    ```
 
-   There is no public admin registration or default admin password. Open `/admin/login`, or use the **Admin login** link on the customer login page.
-
-The SQL script inserts its sample categories and avoids adding a product again when a product with the same name already exists. Re-importing it also fills missing image URLs for the sample products.
+There is no public admin registration or default admin password. Open `/admin/login`, or use the **Admin login** link on the customer login page.
 
 ## Deploy to Tomcat 10.1
 
@@ -190,9 +235,8 @@ Add screenshots to a `screenshots/` directory and link them here. No screenshots
 
 ## Limitations and future enhancements
 
-- Educational demo; admin access is separate and protected, but the application is not production-ready. Customer passwords in the existing `users` table are not hashed.
+- Educational demo; it has no real payment processing and has not undergone a production security audit. Customer passwords are stored as BCrypt hashes after fresh setup or the documented migration.
 - No real payment processing, delivery tracking, or production deployment configuration.
-- Database connection values are local-development constants in source code.
 - The UI and sample data are intended for demonstration rather than a production catalogue.
 
-Possible enhancements include externalized secrets and a managed connection pool, customer password hashing, automated tests, broader input/CSRF protections, payment-provider integration, delivery tracking, and deployment automation.
+Possible enhancements include a managed connection pool, distributed rate limiting, broader automated integration/security testing, payment-provider integration, delivery tracking, and deployment automation.

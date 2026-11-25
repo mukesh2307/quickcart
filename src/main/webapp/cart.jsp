@@ -23,10 +23,11 @@ request.setAttribute("cartTotal",total);
 <div class="cart-item-main"><h3><c:out value="${item.name}"/></h3><p>₹<c:out value="${item.price}"/> each</p>
 <div class="cart-actions">
 <form class="quantity-form" method="post" action="${pageContext.request.contextPath}/cart">
+<input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>">
 <input type="hidden" name="action" value="update"><input type="hidden" name="productId" value="${item.productId}">
 <label for="qty-${item.productId}">Qty</label><input id="qty-${item.productId}" type="number" min="0" max="99" name="quantity" value="${item.quantity}">
 <button class="button button-small" type="submit">Update</button></form>
-<form method="post" action="${pageContext.request.contextPath}/cart"><input type="hidden" name="action" value="remove"><input type="hidden" name="productId" value="${item.productId}">
+<form method="post" action="${pageContext.request.contextPath}/cart"><input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>"><input type="hidden" name="action" value="remove"><input type="hidden" name="productId" value="${item.productId}">
 <button class="text-button" type="submit">Remove</button></form></div>
 </div><strong class="line-total">₹<c:out value="${item.lineTotal}"/></strong></article>
 </c:forEach>
@@ -34,6 +35,6 @@ request.setAttribute("cartTotal",total);
 <div class="summary-line"><span>Subtotal</span><strong>₹<c:out value="${cartTotal}"/></strong></div>
 <div class="summary-line"><span>Delivery</span><strong>Free</strong></div><div class="summary-line summary-total"><span>Total</span><strong>₹<c:out value="${cartTotal}"/></strong></div>
 <a class="button button-dark full-button" href="${pageContext.request.contextPath}/checkout">Proceed to checkout</a>
-<form method="post" action="${pageContext.request.contextPath}/cart"><input type="hidden" name="action" value="clear"><button class="text-button clear-button" type="submit">Clear cart</button></form>
+<form method="post" action="${pageContext.request.contextPath}/cart"><input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>"><input type="hidden" name="action" value="clear"><button class="text-button clear-button" type="submit">Clear cart</button></form>
 </aside></div>
 </c:otherwise></c:choose></main></body></html>

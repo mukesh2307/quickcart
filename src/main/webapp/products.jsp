@@ -14,6 +14,7 @@
     <a class="cart-link" href="${pageContext.request.contextPath}/admin/login">Admin login</a>
     <a class="cart-link" href="${pageContext.request.contextPath}/cart">Go to cart<c:if test="${cartItemCount gt 0}"><span class="cart-count"><c:out value="${cartItemCount}"/></span></c:if></a>
     <form class="customer-logout-form" method="post" action="${pageContext.request.contextPath}/logout">
+      <input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>">
       <button class="cart-link customer-logout" type="submit">Log out</button>
     </form>
   </div>
@@ -27,7 +28,8 @@
   </section>
   <c:if test="${not empty sessionScope.flash}"><div class="notice"><c:out value="${sessionScope.flash}"/></div><c:remove var="flash" scope="session"/></c:if>
   <div id="react-basket-demo" data-cart-url="${pageContext.request.contextPath}/cart"
-       data-search="<c:out value='${search}'/>" data-category="<c:out value='${selectedCategory}'/>" aria-live="polite">
+       data-search="<c:out value='${search}'/>" data-category="<c:out value='${selectedCategory}'/>"
+       data-csrf-token="<c:out value='${sessionScope.customerCsrfToken}'/>" aria-live="polite">
     <c:forEach var="product" items="${products}">
       <c:set var="quickCartItem" value="${sessionScope.cart[product.id]}"/>
       <span hidden data-product-id="<c:out value='${product.id}'/>"
@@ -59,6 +61,7 @@
             <div class="product-bottom"><div><strong class="price">₹<c:out value="${product.price}"/></strong><small class="stock"><c:out value="${product.stock}"/> in stock</small></div>
               <c:choose><c:when test="${product.stock gt 0}">
                 <form method="post" action="${pageContext.request.contextPath}/cart">
+                  <input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.customerCsrfToken}'/>">
                   <input type="hidden" name="action" value="add"><input type="hidden" name="productId" value="${product.id}">
                   <input type="hidden" name="q" value="<c:out value='${search}'/>">
                   <input type="hidden" name="category" value="<c:out value='${selectedCategory}'/>">

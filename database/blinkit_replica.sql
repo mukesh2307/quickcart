@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   email VARCHAR(255) NOT NULL UNIQUE,
   phone VARCHAR(20) NOT NULL,
   delivery_address VARCHAR(500) NOT NULL,
-  password VARCHAR(255) NOT NULL
+  password_hash VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS admin_users (

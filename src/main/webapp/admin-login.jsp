@@ -16,6 +16,7 @@
   <p class="muted">Sign in to manage inventory and review orders.</p>
   <c:if test="${not empty error}"><div class="error"><c:out value="${error}"/></div></c:if>
   <form class="admin-login-form" method="post" action="${pageContext.request.contextPath}/admin/login">
+    <input type="hidden" name="csrfToken" value="<c:out value='${sessionScope.adminCsrfToken}'/>">
     <label for="admin-email">Admin email</label>
     <input id="admin-email" type="email" name="email" autocomplete="username" value="<c:out value='${email}'/>" required>
     <label for="admin-password">Password</label>

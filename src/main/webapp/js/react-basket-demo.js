@@ -21,6 +21,7 @@
   const cartUrl = mountNode.dataset.cartUrl;
   const search = mountNode.dataset.search;
   const category = mountNode.dataset.category;
+  const csrfToken = mountNode.dataset.csrfToken;
 
   function BasketDemo() {
     const [quantities, setQuantities] = window.React.useState({});
@@ -94,6 +95,7 @@
           h("small", null, itemCount + (itemCount === 1 ? " item" : " items"))
         ),
         h("form", { method: "post", action: cartUrl, className: "react-demo-actions" },
+          h("input", { type: "hidden", name: "csrfToken", value: csrfToken }),
           h("input", { type: "hidden", name: "action", value: "addSelected" }),
           h("input", { type: "hidden", name: "q", value: search }),
           h("input", { type: "hidden", name: "category", value: category }),
