@@ -3,9 +3,10 @@
 <!DOCTYPE html><html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin dashboard | QuickCart</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/theme.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
-</head><body>
+</head><body class="admin-page">
 <%@ include file="/WEB-INF/jspf/admin-nav.jspf" %>
 <main class="container admin-container">
   <div class="admin-page-heading"><div><p class="eyebrow">QUICKCART OPERATIONS</p><h1>Admin dashboard</h1></div>

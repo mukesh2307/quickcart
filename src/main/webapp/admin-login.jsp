@@ -4,6 +4,7 @@
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Admin login | QuickCart</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/theme.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin.css">
 </head><body class="admin-login-page">
@@ -20,7 +21,7 @@
     <input id="admin-email" type="email" name="email" autocomplete="username" value="<c:out value='${email}'/>" required>
     <label for="admin-password">Password</label>
     <input id="admin-password" type="password" name="password" autocomplete="current-password" required>
-    <button class="button button-dark" type="submit">Sign in to admin</button>
+    <button class="button button-primary" type="submit">Sign in to admin</button>
   </form>
   <p class="admin-login-help">Admin accounts are created by the site owner; there is no public admin signup.</p>
 </main>
