@@ -1,5 +1,7 @@
 package com.blinkit.model;
 
+import com.blinkit.util.ImageUrls;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -26,7 +28,7 @@ public class CartItem implements Serializable {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return ImageUrls.thumbnail(imageUrl, 120);
     }
 
     public BigDecimal getPrice() {

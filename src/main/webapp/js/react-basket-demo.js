@@ -62,6 +62,9 @@
               className: "react-demo-image",
               src: product.imageUrl,
               alt: "",
+              width: 58,
+              height: 58,
+              decoding: "async",
               loading: "lazy"
             }),
             h("div", { className: "react-demo-product" },

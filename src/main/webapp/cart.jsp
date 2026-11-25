@@ -18,8 +18,9 @@ request.setAttribute("cartTotal",total);
 <a class="button button-dark" href="${pageContext.request.contextPath}/products">Browse products</a></div>
 </c:when><c:otherwise>
 <div class="cart-layout"><div class="cart-items">
-<c:forEach var="item" items="${sessionScope.cart.values()}">
-<article class="cart-item"><img src="<c:out value='${item.imageUrl}'/>" alt="">
+<c:forEach var="item" items="${sessionScope.cart.values()}" varStatus="cartStatus">
+<article class="cart-item"><img src="<c:out value='${item.imageUrl}'/>" alt="" width="120" height="120"
+loading="${cartStatus.first ? 'eager' : 'lazy'}" decoding="async">
 <div class="cart-item-main"><h3><c:out value="${item.name}"/></h3><p>₹<c:out value="${item.price}"/> each</p>
 <div class="cart-actions">
 <form class="quantity-form" method="post" action="${pageContext.request.contextPath}/cart">

@@ -33,7 +33,7 @@
       <span hidden data-product-id="<c:out value='${product.id}'/>"
         data-name="<c:out value='${product.name}'/>"
         data-category="<c:out value='${product.categoryName}'/>"
-        data-image-url="<c:out value='${product.imageUrl}'/>"
+        data-image-url="<c:out value='${product.thumbnailUrl}'/>"
         data-price="<c:out value='${product.price}'/>"
         data-stock="<c:out value='${product.stock}'/>"
         data-in-cart="<c:out value='${empty quickCartItem ? 0 : quickCartItem.quantity}'/>"></span>
@@ -53,7 +53,7 @@
     <div class="product-grid">
       <c:forEach var="product" items="${products}">
         <article class="product-card">
-          <div class="product-image-wrap"><img class="product-image" src="<c:out value='${product.imageUrl}'/>" alt="<c:out value='${product.name}'/>" loading="lazy">
+          <div class="product-image-wrap"><img class="product-image" src="<c:out value='${product.thumbnailUrl}'/>" alt="<c:out value='${product.name}'/>" width="400" height="400" loading="lazy" decoding="async">
             <span class="category-pill"><c:out value="${product.categoryName}"/></span></div>
           <div class="product-info"><h3><c:out value="${product.name}"/></h3><p class="product-description"><c:out value="${product.description}"/></p>
             <div class="product-bottom"><div><strong class="price">₹<c:out value="${product.price}"/></strong><small class="stock"><c:out value="${product.stock}"/> in stock</small></div>

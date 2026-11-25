@@ -1,5 +1,7 @@
 package com.blinkit.model;
 
+import com.blinkit.util.ImageUrls;
+
 import java.math.BigDecimal;
 
 public class Product {
@@ -20,5 +22,6 @@ public class Product {
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getImageUrl() { return imageUrl; }
+    public String getThumbnailUrl() { return ImageUrls.thumbnail(imageUrl, 400); }
     public BigDecimal getPrice() { return price; }
 }
