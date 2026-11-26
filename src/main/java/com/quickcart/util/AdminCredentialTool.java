@@ -1,4 +1,4 @@
-package com.blinkit.util;
+package com.quickcart.util;
 
 import java.io.Console;
 import java.security.GeneralSecurityException;

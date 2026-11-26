@@ -1,4 +1,4 @@
-package com.blinkit.model;
+package com.quickcart.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;

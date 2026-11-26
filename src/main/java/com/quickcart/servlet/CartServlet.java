@@ -1,8 +1,8 @@
-package com.blinkit.servlet;
+package com.quickcart.servlet;
 
-import com.blinkit.dao.ProductDAO;
-import com.blinkit.model.CartItem;
-import com.blinkit.model.Product;
+import com.quickcart.dao.ProductDAO;
+import com.quickcart.model.CartItem;
+import com.quickcart.model.Product;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;

@@ -1,4 +1,4 @@
-package com.blinkit.util;
+package com.quickcart.util;
 
 public final class ImageUrls {
     private static final String PEXELS_PHOTO_PREFIX = "https://images.pexels.com/photos/";

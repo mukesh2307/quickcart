@@ -1,10 +1,10 @@
-package com.blinkit.dao;
+package com.quickcart.dao;
 
-import com.blinkit.model.CartItem;
-import com.blinkit.model.OrderLine;
-import com.blinkit.model.OrderSummary;
-import com.blinkit.model.PopularProduct;
-import com.blinkit.util.DBConnection;
+import com.quickcart.model.CartItem;
+import com.quickcart.model.OrderLine;
+import com.quickcart.model.OrderSummary;
+import com.quickcart.model.PopularProduct;
+import com.quickcart.util.DBConnection;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;

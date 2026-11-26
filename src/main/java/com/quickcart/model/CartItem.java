@@ -1,6 +1,6 @@
-package com.blinkit.model;
+package com.quickcart.model;
 
-import com.blinkit.util.ImageUrls;
+import com.quickcart.util.ImageUrls;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

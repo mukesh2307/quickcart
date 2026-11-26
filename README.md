@@ -1,4 +1,4 @@
-# Blinkit Replica — Java Web Application
+# QuickCart — Java Web Application
 
 A student project that demonstrates a grocery shopping workflow with Java Servlets, JSP, JDBC, and MySQL. Browse and search a product catalogue, manage a session-based cart, and place an order with inventory checks.
 
@@ -60,10 +60,10 @@ JSP pages render the user interface. Servlets handle HTTP requests and coordinat
 ```text
 .
 ├── database/
-│   └── blinkit_replica.sql       # Database schema and sample data
+│   └── quickcart.sql       # Database schema and sample data
 ├── src/
 │   └── main/
-│       ├── java/com/blinkit/
+│       ├── java/com/quickcart/
 │       │   ├── dao/              # Product, admin, user, and order database access
 │       │   ├── model/            # Product, cart, and order models
 │       │   ├── servlet/          # Customer and administrator request handlers
@@ -98,7 +98,7 @@ The web application is deployed as a WAR and has no runtime application `main` m
 
 ## Database
 
-`database/blinkit_replica.sql` creates the `blinkit_replica` database, its tables, and sample catalogue data.
+`database/quickcart.sql` creates the `quickcart` database, its tables, and sample catalogue data.
 
 | Table | Description |
 |---|---|
@@ -111,7 +111,7 @@ The web application is deployed as a WAR and has no runtime application `main` m
 
 ### MySQL connection configuration
 
-For the local XAMPP demo, the existing `DBConnection` class uses `localhost:3306`, database `blinkit_replica`, username `root`, and an empty password. These are sample local-development settings only, not production credentials. If your local MySQL setup differs, update the connection constants in `src/main/java/com/blinkit/util/DBConnection.java` for your own machine and do not commit real passwords.
+For the local XAMPP demo, the existing `DBConnection` class uses `localhost:3306`, database `quickcart`, username `root`, and an empty password. These are sample local-development settings only, not production credentials. If your local MySQL setup differs, update the connection constants in `src/main/java/com/quickcart/util/DBConnection.java` for your own machine and do not commit real passwords.
 
 The application currently keeps these settings in source code. For a deployed or shared environment, use a least-privilege database account and move credentials to a server-side environment/configuration mechanism (for example, a Tomcat-managed JNDI DataSource). Do not put credentials in Git, JSPs, or browser code.
 
@@ -133,23 +133,23 @@ From the directory containing `pom.xml`:
 mvn clean package
 ```
 
-The generated WAR is `target/blinkit-replica.war`.
+The generated WAR is `target/quickcart.war`.
 
 The products page's React-powered frequently purchased section submits selected quantities to the server-side cart. The admin frequently bought page uses React for search and ranking controls, with a server-rendered table fallback. React libraries load from unpkg, so an internet connection is needed for those enhancements.
 
 ## Set up the database
 
 1. Start MySQL in XAMPP (Apache in XAMPP is not required).
-2. Create and populate the database by importing `database/blinkit_replica.sql` with phpMyAdmin, MySQL Workbench, or the MySQL command-line client. For example:
+2. Create and populate the database by importing `database/quickcart.sql` with phpMyAdmin, MySQL Workbench, or the MySQL command-line client. For example:
 
    ```bash
-   mysql -u root -p < database/blinkit_replica.sql
+   mysql -u root -p < database/quickcart.sql
    ```
 
    If your local root account has no password, omit `-p`. Adjust the command for your local database installation.
-3. Confirm that the `blinkit_replica` database contains `users`, `admin_users`, `categories`, `products`, `orders`, and `order_items`.
+3. Confirm that the `quickcart` database contains `users`, `admin_users`, `categories`, `products`, `orders`, and `order_items`.
 4. Ensure the JDBC settings in `DBConnection.java` match your local database.
-5. Create an admin account: build the project, then run `java -cp target/classes com.blinkit.util.AdminCredentialTool` from a terminal with hidden password input. Use a password of at least 12 characters. Copy the generated hash and insert the account in MySQL:
+5. Create an admin account: build the project, then run `java -cp target/classes com.quickcart.util.AdminCredentialTool` from a terminal with hidden password input. Use a password of at least 12 characters. Copy the generated hash and insert the account in MySQL:
 
    ```sql
    INSERT INTO admin_users (email, password_hash)
@@ -163,9 +163,9 @@ The SQL script inserts its sample categories and avoids adding a product again w
 ## Deploy to Tomcat 10.1
 
 1. Build the WAR with `mvn clean package`.
-2. Copy `target/blinkit-replica.war` into Tomcat's `webapps` directory.
+2. Copy `target/quickcart.war` into Tomcat's `webapps` directory.
 3. Start Tomcat (on Windows, run `bin\startup.bat`; to keep logs in the terminal, run `bin\catalina.bat run`).
-4. Visit **http://localhost:8080/blinkit-replica/**.
+4. Visit **http://localhost:8080/quickcart/**.
 5. To stop Tomcat on Windows, run `bin\shutdown.bat`.
 
 The application uses Jakarta Servlet APIs and is configured for Tomcat 10.1; it is not directly compatible with Tomcat 9 without migration.

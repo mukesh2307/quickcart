@@ -1,9 +1,9 @@
-package com.blinkit.servlet;
+package com.quickcart.servlet;
 
-import com.blinkit.dao.OrderDAO;
-import com.blinkit.dao.ProductDAO;
-import com.blinkit.model.OrderSummary;
-import com.blinkit.model.Product;
+import com.quickcart.dao.OrderDAO;
+import com.quickcart.dao.ProductDAO;
+import com.quickcart.model.OrderSummary;
+import com.quickcart.model.Product;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

@@ -1,4 +1,4 @@
-package com.blinkit.servlet;
+package com.quickcart.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

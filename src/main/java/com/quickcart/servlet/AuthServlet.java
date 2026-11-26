@@ -1,12 +1,12 @@
-package com.blinkit.servlet;
+package com.quickcart.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.blinkit.dao.UserDAO;
-import com.blinkit.model.User;
+import com.quickcart.dao.UserDAO;
+import com.quickcart.model.User;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

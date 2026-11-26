@@ -1,4 +1,4 @@
-package com.blinkit.filter;
+package com.quickcart.filter;
 
 import java.io.IOException;
 import jakarta.servlet.Filter;

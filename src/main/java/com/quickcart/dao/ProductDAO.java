@@ -1,7 +1,7 @@
-package com.blinkit.dao;
+package com.quickcart.dao;
 
-import com.blinkit.model.Product;
-import com.blinkit.util.DBConnection;
+import com.quickcart.model.Product;
+import com.quickcart.util.DBConnection;
 import java.sql.*;
 import java.util.*;
 

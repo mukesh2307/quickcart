@@ -1,7 +1,7 @@
-package com.blinkit.dao;
+package com.quickcart.dao;
 
-import com.blinkit.util.AdminPassword;
-import com.blinkit.util.DBConnection;
+import com.quickcart.util.AdminPassword;
+import com.quickcart.util.DBConnection;
 import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

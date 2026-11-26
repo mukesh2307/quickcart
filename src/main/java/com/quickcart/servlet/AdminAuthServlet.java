@@ -1,6 +1,6 @@
-package com.blinkit.servlet;
+package com.quickcart.servlet;
 
-import com.blinkit.dao.AdminDAO;
+import com.quickcart.dao.AdminDAO;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;

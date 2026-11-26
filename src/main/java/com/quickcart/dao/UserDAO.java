@@ -1,5 +1,5 @@
 
-package com.blinkit.dao;
+package com.quickcart.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-import com.blinkit.model.User;
-import com.blinkit.util.DBConnection;
+import com.quickcart.model.User;
+import com.quickcart.util.DBConnection;
 
 public class UserDAO {
 

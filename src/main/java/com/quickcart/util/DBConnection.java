@@ -1,5 +1,5 @@
 
-package com.blinkit.util;
+package com.quickcart.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public final class DBConnection {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/blinkit_replica?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/quickcart?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "";

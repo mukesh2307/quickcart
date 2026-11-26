@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="java.util.Map,java.math.BigDecimal,com.blinkit.model.CartItem" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" import="java.util.Map,java.math.BigDecimal,com.quickcart.model.CartItem" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%
 Map<Integer,CartItem> cart=(Map<Integer,CartItem>)session.getAttribute("cart");

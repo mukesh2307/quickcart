@@ -1,4 +1,4 @@
-package com.blinkit.model;
+package com.quickcart.model;
 
 public class User {
     private int id;
